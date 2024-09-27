@@ -1,0 +1,35 @@
+<div class="flex justify-center items-center w-screen">
+  <div class="p-5 border rounded text-center text-gray-500 w-11/12  md:w-4/12">
+    <img class="w-32 h-32 rounded-full mx-auto" [src]="userData?.user?.image" alt="">
+    <div class="text-sm mt-5">
+        <a href="#"
+            class="font-medium leading-none text-gray-900 hover:text-neutral-100 transition duration-500 ease-in-out">{{userData?.user?.username}}
+        </a>
+        <p class="text-neutral-200">{{userData?.user?.email}}</p>
+    </div>
+
+    <p class="mt-2 text-sm text-neutral-200">{{userData?.user?.bio}}</p>
+
+    <div class="flex mt-4 justify-center">
+       <a class="w-11/12"[routerLink]="['/edit/' , userData?.user?.username]"> <button class="w-11/12 h-12 bg-neutral-400 rounded-md text-white">Edit Account</button></a>
+    </div>
+    <div class="flex mt-4 justify-center">
+       <a class="w-11/12" (click)="logout()"> <button class="w-11/12 h-12 bg-red-700 rounded-md text-white">Logout</button></a>
+    </div>
+
+  </div>
+</div>
+<p *ngIf="doUserHaveArticles" class="text-2xl font-semibold text-gray-200 flex justify-center items-center mt-4">Your articles is here</p>
+<p *ngIf="!doUserHaveArticles" class="text-2xl font-semibold text-gray-200 flex justify-center items-center mt-4">You dont have any articls </p>
+<p *ngIf="!doUserHaveArticles" class="text-2xl font-semibold text-gray-200 flex justify-center items-center "> <a class="underline" routerLink="/Create">Write on now</a></p>
+<div *ngFor="let article of userArticles" class="px-4 md:px-12 py-9 flex-col justify-start items-center text-white border-b-2 border-neutral-400">
+  <div class="flex flex-row gap-3"><p>{{article.author.username}}</p><img class="rounded-full h-5" [src]="article.author.image"></div>
+  <p class="text-2xl font-bold">{{article.title}}</p>
+  <p class="text-lg font-light">{{article.description}}</p>
+  <button  class="underline font-thin text-sm"> Continue reading...</button>
+  <div class="flex flex-row">
+    <img class="h-5" src="https://img.icons8.com/?size=100&id=85038&format=png&color=FFFFFF" *ngIf="article.favorited">
+  <img lang="h-5" src="https://img.icons8.com/?size=100&id=85138&format=png&color=FFFFFF"  *ngIf="!article.favorited"><p class="text-neutral-200 font-semibold">{{article.favoritesCount}}</p>
+
+  </div>
+</div>

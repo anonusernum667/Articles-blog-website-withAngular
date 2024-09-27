@@ -1,0 +1,56 @@
+<div
+  class="auth-page w-screen h-screen bg-neutral-300 flex justify-center items-center"
+>
+  <div
+    class="bg-white md:w-4/12 w-5/6 h-fit flex flex-col justify-center items-center p-12 rounded-md"
+  >
+    <div class="flex flex-col justify-center items-center">
+      <p class="text-3xl text-gray-700 mb-3">Login</p>
+      <a
+        routerLink="/sign-up"
+        class="text-sm text-gray-600 underline hover:font-medium duration-100"
+        >dont have an account?</a
+      >
+    </div>
+    <div class="text-red-700">
+      <div *ngIf="errorDetails.length > 0" class="error-container">
+        <div *ngFor="let errorDetail of errorDetails">
+          <!-- Display the error key (e.g., 'email or password') -->
+          <strong>{{ errorDetail.key }}:</strong>
+
+          <!-- Display each error message related to the key -->
+          <ul>
+            <li *ngFor="let message of errorDetail.messages">
+              {{ message }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col justify-center items-center">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <fieldset class="form-group">
+          <input
+            type="email"
+            class="form-control w-full bg-neutral-200 border-gray-600 p-2 border rounded-md mt-4"
+            placeholder="enter a email"
+            formControlName="email"
+          />
+          <input
+            name="password"
+            type="password"
+            class="form-control w-full bg-neutral-200 border-gray-600 p-2 border rounded-md mt-4"
+            placeholder="enter a password"
+            formControlName="password"
+          />
+          <button
+            type="submit"
+            class="form-control w-full bg-gray-600 border-neutral-300 text-white hover:bg-gray-500 duration-200 p-2 border rounded-md mt-4"
+          >
+            Login
+          </button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

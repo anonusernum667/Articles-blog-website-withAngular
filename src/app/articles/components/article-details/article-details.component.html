@@ -1,0 +1,107 @@
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
+  <!-- Article Information -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">{{ articleDetails?.title }}</h1>
+    <p class="text-sm text-gray-500">{{ articleDetails?.createdAt | date }}</p>
+    <div *ngIf="yourPost" class="mt-4">
+      <button (click)="onDeleteArticle(articleDetails?.slug)"
+        class="bg-red-600 text-white px-4 py-2 rounded-lg mr-2">
+        Delete article
+      </button>
+
+    <a routerLink='/article/{{articleDetails?.slug}}/edit'  *ngIf="yourPost">
+      <button
+        class="bg-gray-400 text-white px-4 py-2 rounded-lg">
+        Edit
+      </button>
+    </a>
+    </div>
+    <div class="flex items-center mt-4">
+      <img [src]="articleDetails?.author?.image" alt="Author's image" class="w-10 h-10 rounded-full mr-4">
+      <div>
+        <a [routerLink]="[articleDetails?.author?.username]" class="text-lg font-semibold">{{ articleDetails?.author?.username }}</a>
+        <p class="text-sm text-gray-600">{{ articleDetails?.author?.bio || 'No bio available' }}</p>
+        <button *ngIf="!isFollowing"
+          class="mt-2 px-4 py-2 rounded-full text-white bg-gray-500" (click)="follow(articleDetails?.author?.username)">
+        Follow
+          </button>
+        <button
+        *ngIf="isFollowing"
+          class="mt-2 px-4 py-2 rounded-full text-white bg-indigo-300" (click)="unFollow(articleDetails?.author?.username)">
+          unfollow
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <p class="text-lg text-gray-700">{{ articleDetails?.description }}</p>
+      <div class="mt-4" [innerHTML]="articleDetails?.body"></div>
+    </div>
+
+    <!-- Tags and Favorite Button -->
+    <div class="flex items-center justify-between mt-6">
+      <div>
+        <span *ngFor="let tag of articleDetails?.tagList" class="inline-block bg-gray-200 text-sm px-2 py-1 rounded-lg mr-2">
+          {{ tag }}
+        </span>
+      </div>
+      <button
+        class="px-4 py-2 rounded-full text-white flex justify-start items-center flex-row gap-2"
+        [ngClass]="articleDetails?.favorited ? 'bg-red-500' : 'bg-gray-500'">
+        <button (click)="like(articleDetails?.slug)" *ngIf="!liked" ><img class="h-5"  src="https://img.icons8.com/?size=100&id=85038&format=png&color=FFFFFF"  ></button>
+        <button  (click)="unlike(articleDetails?.slug)" *ngIf="liked" ><img class="h-5" src="https://img.icons8.com/?size=100&id=85138&format=png&color=FFFFFF" ></button>
+         <p>{{ articleDetails?.favoritesCount }}</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="mt-10">
+    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Comments</h3>
+    <div *ngFor="let comment of commentsResponse?.comments" class="mb-6 p-4 border rounded-lg">
+      <div class="flex items-center mb-4">
+        <img [src]="comment.author.image" alt="Comment Author Image" class="w-8 h-8 rounded-full mr-4">
+        <div>
+          <h4 class="text-md font-semibold">{{ comment.author.username }}</h4>
+          <p class="text-sm text-gray-600">{{ comment.createdAt | date }}</p>
+        </div>
+      </div>
+      <p class="text-gray-700">{{ comment.body }}</p>
+
+      <!-- Show Follow/Unfollow Button -->
+      <button
+        class="mt-2 px-4 py-1 rounded-full text-white"
+        [ngClass]="comment.author.following ? 'bg-red-500' : 'bg-green-500'">
+        {{ comment.author.following ? 'Unfollow' : 'Follow' }}
+      </button>
+
+      <!-- Show Delete Button Only If Current User is the Author -->
+      <div *ngIf="currentUser === comment.author.username" class="mt-4">
+        <button (click)="onDeleteComment(comment.id, articleDetails?.slug)"
+          class="bg-red-600 text-white px-4 py-2 rounded-lg">
+          Delete Comment
+        </button>
+      </div>
+    </div>
+    <div class="mt-10">
+      <h3 class="text-xl font-semibold mb-4">Add a Comment</h3>
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmitComment(articleDetails?.slug)">
+        <textarea
+          formControlName="commentBody"
+          rows="4"
+          class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          placeholder="Write a comment..."></textarea>
+
+        <div *ngIf="commentForm.get('commentBody')?.invalid && commentForm.get('commentBody')?.touched" class="text-red-600 text-sm mt-2">
+          Comment is required.
+        </div>
+
+        <button
+          type="submit"
+          class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg"
+          [disabled]="commentForm.invalid">
+          Post Comment
+        </button>
+      </form>
+    </div>
+  </div>
